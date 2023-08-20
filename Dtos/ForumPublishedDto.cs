@@ -1,6 +1,6 @@
-namespace CommentsService.Dtos
+namespace CommentsService
 {
-    public class ForumReadDto
+    public class ForumPublishedDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -8,5 +8,6 @@ namespace CommentsService.Dtos
         public int UserId { get; set; }
         public int DogId { get; set; }
         public DateTime Time {get; set; }
+        public string Event { get; set; }
     }
 }

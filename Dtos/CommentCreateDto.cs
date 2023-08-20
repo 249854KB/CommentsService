@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ForumsService.Dtos
+namespace CommentsService.Dtos
 {
-    public class ForumCreateDto
+    public class CommentCreateDto
     {
         [Required]
         public string Title { get; set; }
@@ -10,6 +10,6 @@ namespace ForumsService.Dtos
         [Required]
         public string Text { get; set; }
 
-        public int DogId { get; set; }
+        public int CommentId { get; set; }
     }
 }

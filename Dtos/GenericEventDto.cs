@@ -1,4 +1,4 @@
-namespace ForumsService.Dtos{
+namespace CommentsService.Dtos{
     public class GenericEventDto
     {
         public string Event { get; set;}

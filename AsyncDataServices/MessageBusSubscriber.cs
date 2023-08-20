@@ -2,13 +2,13 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ForumsService.EventProcessing;
+using CommentsService.EventProcessing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace ForumsService.AsyncDataServices
+namespace CommentsService.AsyncDataServices
 {
     public class MessageBusSubscriber : BackgroundService
     {

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ForumsService.AsyncDataServices;
-using ForumsService.Data;
-using ForumsService.EventProcessing;
-using ForumsService.SyncDataServices.Grpc;
+using CommentsService.AsyncDataServices;
+using CommentsService.Data;
+using CommentsService.EventProcessing;
+using CommentsService.SyncDataServices.Grpc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -17,7 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-namespace ForumsService
+namespace CommentsService
 {
     public class Startup
     {
@@ -33,15 +33,15 @@ namespace ForumsService
            
             services.AddDbContext<AppDbContext> (optionsAction =>
             optionsAction.UseInMemoryDatabase("InMemnam"));
-            services.AddScoped<IForumRepo, ForumRepo>(); //IF they ask for IUser Repo we give them user repo
+            services.AddScoped<ICommentRepo, CommentRepo>(); //IF they ask for IForum Repo we give them forum repo
             services.AddControllers();
             services.AddHostedService<MessageBusSubscriber>();
             services.AddSingleton<IEventProcessor, EventProcessor>(); //Singletone ->> all time alongside 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddScoped<IUserDataClient, UserDataClient>();  //Registering it
+            services.AddScoped<IForumDataClient, ForumDataClient>();  //Registering it
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ForumsService", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommentsService", Version = "v1" });
             });
 
      
@@ -55,7 +55,7 @@ namespace ForumsService
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ForumsService v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommentsService v1"));
             }
 
             //app.UseHttpsRedirection();

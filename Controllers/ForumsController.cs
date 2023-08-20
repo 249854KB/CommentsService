@@ -1,80 +1,37 @@
-using System;
-using System.Collections.Generic;
 using AutoMapper;
-using ForumsService.Data;
-using ForumsService.Dtos;
-using ForumsService.Models;
+using CommentsService.Data;
+using CommentsService.Dtos;
+using CommentsService.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
-namespace ForumsService.Controllers
+namespace CommentsService.Controllers
 {
-    [Route("api/f/users/{userId}/[controller]")]
+    [Route("api/c/[controller]")]
     [ApiController]
-    public class ForumsController : ControllerBase
+    public class ForumsController: ControllerBase
     {
-        private readonly IForumRepo _repository;
+        private readonly ICommentRepo _repository;
         private readonly IMapper _mapper;
 
-        public ForumsController(IForumRepo repository, IMapper mapper)
+        public ForumsController(ICommentRepo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
-
         [HttpGet]
-        public ActionResult<IEnumerable<ForumReadDto>> GetForumsForUser(int userId)
+        public ActionResult<IEnumerable<ForumReadDto>> GetForums()
         {
-            Console.WriteLine($"--> Hit GetForumsForUser: {userId}");
-
-            if (!_repository.UserExists(userId))
-            {
-                return NotFound();
-            }
-
-            var forums = _repository.GetForumsForUser(userId);
-
-            return Ok(_mapper.Map<IEnumerable<ForumReadDto>>(forums));
+            Console.WriteLine("-->> Getting Forum From Comment service");
+            var forumItems = _repository.GetAllForums();
+            return Ok(_mapper.Map<IEnumerable<ForumReadDto>>(forumItems));
         }
-
-        [HttpGet("{forumId}", Name = "GetForumForUser")]
-        public ActionResult<ForumReadDto> GetForumForUser(int userId, int forumId)
-        {
-            Console.WriteLine($"--> Hit GetForumForUser: {userId} / {forumId}");
-
-            if (!_repository.UserExists(userId))
-            {
-                return NotFound();
-            }
-
-            var forum = _repository.GetForum(userId, forumId);
-
-            if(forum == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(_mapper.Map<ForumReadDto>(forum));
-        }
-
         [HttpPost]
-        public ActionResult<ForumReadDto> CreateForumForUser(int userId, ForumCreateDto forumDto)
+        public ActionResult TestInboundConnection()
         {
-             Console.WriteLine($"--> Hit CreateForumForUser: {userId}");
-
-            if (!_repository.UserExists(userId))
-            {
-                return NotFound();
-            }
-            var forum = _mapper.Map<Forum>(forumDto);
-            forum.Time = DateTime.Now;
-            _repository.CreateForum(userId, forum);
-            _repository.SaveChanges();
-
-            var forumReadDto = _mapper.Map<ForumReadDto>(forum);
-
-            return CreatedAtRoute(nameof(GetForumForUser),
-                new {userId = userId, forumId = forumReadDto.Id}, forumReadDto);
+            Console.WriteLine("--> Inboud POST # Command Service");
+            return Ok("Inmbound test ok for comments controller");
         }
-
+        //Https and grcp is synchronius
     }
 }

@@ -1,4 +1,4 @@
-namespace ForumsService.EventProcessing
+namespace CommentsService.EventProcessing
 {
     public interface IEventProcessor
     {

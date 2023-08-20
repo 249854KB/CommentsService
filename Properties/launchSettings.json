@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ForumsService": {
+    "CommentsService": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

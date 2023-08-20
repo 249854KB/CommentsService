@@ -1,8 +1,8 @@
-using ForumsService.Models;
-using ForumsService.SyncDataServices.Grpc;
+using CommentsService.Models;
+using CommentsService.SyncDataServices.Grpc;
 using System;
 
-namespace ForumsService.Data
+namespace CommentsService.Data
 {
     public static class PrepDb
     {
@@ -10,20 +10,20 @@ namespace ForumsService.Data
         {
             using(var servicesScope  = applicationBuilder.ApplicationServices.CreateScope())
             {
-                var grpcClient = servicesScope.ServiceProvider.GetService<IUserDataClient>();
-                var users = grpcClient.ReturnAllUsers();
-                SeedData(servicesScope.ServiceProvider.GetService<IForumRepo>(),users);
+                var grpcClient = servicesScope.ServiceProvider.GetService<IForumDataClient>();
+                var forums = grpcClient.ReturnAllForums();
+                SeedData(servicesScope.ServiceProvider.GetService<ICommentRepo>(),forums);
             }
         }
-        private static void SeedData(IForumRepo repo, IEnumerable<User> users)
+        private static void SeedData(ICommentRepo repo, IEnumerable<Forum> forums)
         {
-            Console.WriteLine("Seeding new users...");
+            Console.WriteLine("Seeding new forums...");
 
-            foreach (var user in users)
+            foreach (var forum in forums)
             {
-                if(!repo.ExternalUserExists(user.ExternalID))
+                if(!repo.ExternalForumExists(forum.UserId, forum.ExternalID))
                 {
-                    repo.CreateUser(user);
+                    repo.CreateForum(forum);
                 }
                 repo.SaveChanges();
             }

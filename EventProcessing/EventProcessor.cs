@@ -1,12 +1,12 @@
 using System;
 using System.Text.Json;
 using AutoMapper;
-using ForumsService.Data;
-using ForumsService.Dtos;
-using ForumsService.Models;
+using CommentsService.Data;
+using CommentsService.Dtos;
+using CommentsService.Models;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ForumsService.EventProcessing
+namespace CommentsService.EventProcessing
 {
     public class EventProcessor : IEventProcessor
     {
@@ -25,8 +25,8 @@ namespace ForumsService.EventProcessing
 
             switch (eventType)
             {
-                case EventType.UserPublished:
-                    addUser(message);
+                case EventType.ForumPublished:
+                    addForum(message);
                     break;
                 default:
                     break;
@@ -41,41 +41,41 @@ namespace ForumsService.EventProcessing
 
             switch(eventType.Event)
             {
-                case "User_Published":
-                    Console.WriteLine("--> User Published Event Detected");
-                    return EventType.UserPublished;
+                case "Forum_Published":
+                    Console.WriteLine("--> Forum Published Event Detected");
+                    return EventType.ForumPublished;
                 default:
                     Console.WriteLine("--> Could not determine the event type");
                     return EventType.Undetermined;
             }
         }
 
-        private void addUser(string userPublishedMessage)
+        private void addForum(string forumPublishedMessage)
         {
             using (var scope = _scopeFactory.CreateScope())
             {
-                var repo = scope.ServiceProvider.GetRequiredService<IForumRepo>();
+                var repo = scope.ServiceProvider.GetRequiredService<ICommentRepo>();
                 
-                var userPublishedDto = JsonSerializer.Deserialize<UserPublishedDto>(userPublishedMessage);
+                var forumPublishedDto = JsonSerializer.Deserialize<ForumPublishedDto>(forumPublishedMessage);
 
                 try
                 {
-                    var plat = _mapper.Map<User>(userPublishedDto);
-                    if(!repo.ExternalUserExists(plat.ExternalID))
+                    var plat = _mapper.Map<Forum>(forumPublishedDto);
+                    if(!repo.ExternalForumExists(plat.UserId, plat.ExternalID))
                     {
-                        repo.CreateUser(plat);
+                        repo.CreateForum(plat);
                         repo.SaveChanges();
-                        Console.WriteLine("--> User added!");
+                        Console.WriteLine("--> Forum added!");
                     }
                     else
                     {
-                        Console.WriteLine("--> User already exisits...");
+                        Console.WriteLine("--> Forum already exisits...");
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"--> Could not add User to DB {ex.Message}");
+                    Console.WriteLine($"--> Could not add Forum to DB {ex.Message}");
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace ForumsService.EventProcessing
 
     enum EventType
     {
-        UserPublished,
+        ForumPublished,
         Undetermined
     }
 }

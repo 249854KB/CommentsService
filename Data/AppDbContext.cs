@@ -1,7 +1,7 @@
-using ForumsService.Models;
+using CommentsService.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ForumsService.Data
+namespace CommentsService.Data
 {
     public class AppDbContext : DbContext
     {
@@ -9,8 +9,9 @@ namespace ForumsService.Data
         {
 
         }
-        public DbSet<User> Users{ get; set; }
-        public DbSet<Forum> Forums{ get; set;}
+        public DbSet<Forum> Forums{ get; set; }
+        public DbSet<Comment> Comments{ get; set;}
+         public DbSet<User> Users{ get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,11 +21,18 @@ namespace ForumsService.Data
             .WithOne(u=> u.User!)
             .HasForeignKey(u=>u.UserId);
 
+            
             modelBuilder
             .Entity<Forum>()
-            .HasOne(u=>u.User)
-            .WithMany(u=>u.Forums)
-            .HasForeignKey(u=>u.UserId);
+            .HasMany(f => f.Comments)
+            .WithOne(f=> f.Forum!)
+            .HasForeignKey(f=>f.ForumId);
+
+            modelBuilder
+            .Entity<Comment>()
+            .HasOne(f=>f.Forum)
+            .WithMany(f=>f.Comments)
+            .HasForeignKey(f=>f.ForumId);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ForumsService.Models
+namespace CommentsService.Models
 {
     public class User
     {
