@@ -4,9 +4,7 @@ namespace CommentsService.Dtos
 {
     public class CommentCreateDto
     {
-        [Required]
-        public string Title { get; set; }
-
+        
         [Required]
         public string Text { get; set; }
 
