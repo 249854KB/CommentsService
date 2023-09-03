@@ -79,5 +79,33 @@ namespace Comments.Controllers
                 new {forumId = forumId, commentId = commentReadDto.Id, userId = userId}, commentReadDto);
         }
 
+        [HttpPost("{commentId}", Name = "CreateCommentForComment")]
+        public ActionResult<CommentReadDto> CreateCommentForComment(int userId, int forumId, int commentId, CommentCreateDto commentDto)
+        {
+             Console.WriteLine($"--> Hit CreateCommentForForum: {userId} / {forumId}");
+
+            if (!_repository.ForumExists(userId,forumId))
+            {
+                return NotFound();
+            }
+
+            if(_repository.GetComment(userId,forumId, commentId) == null)
+            {
+                return NotFound();
+            }
+            
+            var comment = _mapper.Map<Comment>(commentDto);
+            comment.Time = DateTime.Now;
+            comment.ForumId = forumId;
+            comment.CommentId = commentId;
+
+            _repository.CreateComment(userId,forumId, comment);
+            _repository.SaveChanges();
+
+            var commentReadDto = _mapper.Map<CommentReadDto>(comment);
+
+            return CreatedAtRoute(nameof(GetCommentForForum),
+                new {forumId = forumId, commentId = commentReadDto.Id, userId = userId}, commentReadDto);
+        }
     }
 }
